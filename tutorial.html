@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	</head>
+	<body>
+ <div class = "contentsection codesection">
+    
+        <h3>Overview</h3>
+        
+        <div class = "contentbody">
+        With Cappuccino 0.9 we introduced one of the most powerful components to any set of widgets. This is sometimes overlooked because people often think, "I'm not displaying tabular data, I don't need a table view." 
+        But if you look at Cocoa you can see NSTableViews used almost everywhere. This wide use is because of how performant a tableview must be. We build CPTableView to handle hundreds of thousands of rows and still perform very well.
+        With this tutorial we're going to look at how to build a atypical CPTableView,  and how it might be used in your application.
+        </div>
+
+        <div class="cl">&nbsp;</div>
+                    
+        <div class="overview">
+        
+            <div style = "float:right; margin-right:20px;">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href = ""><img src = "images/zip.png" align = "center" style = "padding-right:5px;"/>Chat Table Sample Code</a></li>
+                </ul>
+            </div>
+            
+            <h3>Topics Covered</h3>
+            
+            <ul>
+                <li><a href = "#AutomaticResizing">Setting up a table view</a></li>
+                <li><a href = "#AutomaticResizing">Custom table data views</a></li>
+                <li><a href = "#AutomaticRepositioning">Variable row heights</a></li>
+                <li><a href = "#AutomaticRepositioning">Group rows</a></li>
+            </ul>
+            
+        </div>
+
+</div>
+
+<!-- Step 1 -->
+
+
+<h3>How to set up a tableview</h3>
+
+<p>
+A CPTableView is still just a view, you create it by calling <span class="selector">initWithFrame:</span> and add it to a scrollview. CPTableView uses a special delegate to load data, this delegate is called the <strong>data source</strong>. 
+</p>
+
+<p>
+            Lets start by creating a new project. You can either use the sample project provided in the starter package, or use the <strong>capp gen</strong> command. Modify your AppController class look like the following:
+</p>
+
+<code>
+@implementation AppController : CPObject
+{
+}
+
+- (void)applicationDidFinishLaunching:(CPNotification)aNotification
+{
+    var theWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(50,50,320,550) styleMask:CPClosableWindowMask|CPResizableWindowMask],
+        newChatButton = [[CPButton alloc] initWithFrame:CGRectMake(15, 15, 290, 24)];
+
+    [newChatButton setTitle:"Open New Chat Window"];
+    [newChatButton setTarget:self];
+    [newChatButton setAction:@selector(openNewChatWindow:)];
+    [newChatButton setAutoresizingMask:CPViewWidthSizable];
+
+    [[theWindow contentView] addSubview:newChatButton];
+
+    [theWindow orderFront:self];
+}
+
+- (void)openNewChatWindow:(id)sender
+{
+    
+}
+
+@end
+</code>
+
+<p>
+            This bit of code just creates a standard blank window. For the purposes of this tutorial it will simply contain a button (that scales it's width) which opens a new chat window.
+</p>
+
+<!-- Step 2 -->
+
+<h3>Setting up the ChatWindowController</h3>
+
+<p>
+In typical MVC style we will create a new class <strong>ChatWindowController</strong> which will manage each chat. Create a new file <strong>ChatWindowController.j</strong> and make it look like the code below:
+</p>
+
+
+<code>
+@implementation ChatWindowController : CPWindowController
+{
+    CPScrollView tableScrollView;
+    CPTableView  chatTableView;
+    CPArray      chatLogData;
+
+    CPTextField  chatTextField;
+}
+
+- (id)initWithNewChatWindow
+{
+    self = [super init];
+
+    if (self)
+    {
+        var chatWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(100,100,320,350) styleMask:CPClosableWindowMask|CPResizableWindowMask],
+            contentView = [chatWindow contentView];
+
+        [self setWindow:chatWindow];
+
+        // position the textfield at the bottom of the window
+        chatTextField = [[CPTextField alloc] initWithFrame:CGRectMake(20, 310, 280, 29)];
+        // make it editable
+        [chatTextField setEditable:YES];
+        // give it a bezel (otherwise it just looks like a label)
+        [chatTextField setBezeled:YES];
+
+        // set it to resize flags to that it stays anchored to the bottom of the window, but also resizes horizontally.
+        [chatTextField setAutoresizingMask:CPViewWidthSizable | CPViewMinYMargin];
+
+        [contentView addSubview:chatTextField];
+    }
+
+    return self;
+}
+
+@end
+</code>
+
+<p>Walking through the code, we are simply defining an instance variable for <strong>tableScrollView</strong>, <strong>chatTableView</strong>, <strong>chatLogData</strong>, and <strong>chatTextField</strong>.</p>
+<p>We then define our designated initializer <strong>initWithNewChatWindow</strong> which will create and setup the chat window.</p>
+            
+
+<p>
+            Move back to your AppController class, first we should import the new ChatWindowController file, like always, add <strong>@import "ChatWindowController.j" to the top of your file.</strong>. Now lets make that button actually do something. Implement your <strong>openNewChatWindow:</strong> method like this:
+</p>
+
+<code>
+- (void)openNewChatWindow:(id)sender
+{
+    var controller = [[ChatWindowController alloc] initWithNewChatWindow];
+    [controller showWindow:self];
+}
+</code>
+
+<p>
+        Now, each time the user clicks the button it will create a new self contained chat window and controller. For now, we're done with the AppController class. This is a good time to test your code to see if there are any bugs.
+</p>
+
+    </div>
+	</body>
+</html>

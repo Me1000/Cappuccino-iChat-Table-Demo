@@ -45,6 +45,7 @@ buddies2 =
 
     if (self)
     {
+        [aWindow setMinSize:CGSizeMake(310, 150)];
         var contentView = [aWindow contentView];
 
         buddyListScrollView = [[CPScrollView alloc] initWithFrame:[contentView bounds]];
@@ -168,11 +169,12 @@ buddies2 =
 
 - (void)layoutSubviews
 {
-console.log("bam")
     if ([representedObjectValue objectForKey:"type"] !== "group")
     {
         var frame = [self frame];
         [self setFrame:CGRectMake(0, frame.origin.y, frame.size.width + frame.origin.x, frame.size.height)];
+
+        [avatar setFrame:CGRectMake(frame.size.width - 35, 2, 30, 30)];
     }
 
     [super layoutSubviews];

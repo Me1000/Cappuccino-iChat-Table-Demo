@@ -48,7 +48,7 @@ var botReplies = ["Hello", "How are you?", "I think Cappuccino is awesome.", "CP
         chatTableView = [[CPTableView alloc] initWithFrame:CGRectMakeZero()];
         [chatTableView setHeaderView:nil];
         [chatTableView setCornerView:nil];
-//        [chatTableView setSelectionHighlightStyle:CPTableViewSelectionHighlightStyleNone];
+        [chatTableView setSelectionHighlightStyle:CPTableViewSelectionHighlightStyleNone];
         [chatTableView setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
 
         var chatColumn = [[CPTableColumn alloc] initWithIdentifier:"chatColumn"];
@@ -168,10 +168,12 @@ var botReplies = ["Hello", "How are you?", "I think Cappuccino is awesome.", "CP
 }
 
 
-- (BOOL)tableView:(CPTableView)aTableView isGroupRow:(int)aRow
+/*- (BOOL)tableView:(CPTableView)aTableView isGroupRow:(int)aRow
 {
     return YES;
-}
+}*/
+
+
 - (void)windowDidResize:(CPWindow)aWindow
 {
     [chatTableView noteHeightOfRowsWithIndexesChanged:[CPIndexSet indexSetWithIndexesInRange:CPMakeRange(0, [chatTableView numberOfRows])]];

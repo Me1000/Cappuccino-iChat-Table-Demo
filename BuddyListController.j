@@ -82,8 +82,7 @@ buddies2 =
 
 - (void)openChat:(id)sender
 {
-    var point = [[CPApp currentEvent] locationInWindow];
-    point.y -= 23;
+    var point = [buddyList convertPoint:[[CPApp currentEvent] locationInWindow] fromView:nil];
 
     var item = [buddyList itemAtRow:[buddyList rowAtPoint:point]];
 

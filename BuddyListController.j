@@ -73,6 +73,7 @@ buddies2 =
         [buddyList setCornerView:nil];
         [buddyList setTarget:self];
         [buddyList setDoubleAction:@selector(openChat:)];
+        [buddyList setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
 
         [buddyList expandItem:nil expandChildren:YES];
     }
@@ -160,15 +161,32 @@ buddies2 =
     CPTextField statusText;
 
     CPTextField groupName;
+
+    id          representedObjectValue;
+}
+
+
+- (void)layoutSubviews
+{
+console.log("bam")
+    if ([representedObjectValue objectForKey:"type"] !== "group")
+    {
+        var frame = [self frame];
+        [self setFrame:CGRectMake(0, frame.origin.y, frame.size.width + frame.origin.x, frame.size.height)];
+    }
+
+    [super layoutSubviews];
+        
 }
 
 - (void)setObjectValue:(id)aValue
 {
+    representedObjectValue = aValue
     // Two types of JS objects can be expected:
     // 1. group {"type":"group", "value":"A Group Name"}
     // 2. user {"type":"user", "name":"My Buddy", "avatar":"url to avatar", "status":"ChatStatus"}
 
-    if ([aValue objectForKey:"type"] === "group")
+    if ([representedObjectValue objectForKey:"type"] === "group")
     {
         [avatar removeFromSuperview];
         [displayName removeFromSuperview];
@@ -184,7 +202,7 @@ buddies2 =
 
         [self addSubview:groupName];
 
-        [groupName setStringValue:[aValue objectForKey:"value"]];
+        [groupName setStringValue:[representedObjectValue objectForKey:"value"]];
     }
     else
     {
@@ -209,12 +227,14 @@ buddies2 =
 
             avatar      = [[CPImageView alloc] initWithFrame:CGRectMake(totalWidth - 35, 2, 30, 30)];
             statusIcon  = [[CPImageView alloc] initWithFrame:CGRectMake(5, (totalHeight / 2 - 8), 16, 16)];
+
+            [avatar setAutoresizingMask:CPViewMinXMargin];
         }
 
-        [displayName setStringValue:[aValue objectForKey:"name"]];
-        [avatar setImage:[aValue objectForKey:"avatar"]];
-        [statusText setStringValue:[self stringValueForStatus:[aValue objectForKey:"status"]]];
-        [statusIcon setImage:[self imageValueForStatus:[aValue objectForKey:"status"]]];
+        [displayName setStringValue:[representedObjectValue objectForKey:"name"]];
+        [avatar setImage:[representedObjectValue objectForKey:"avatar"]];
+        [statusText setStringValue:[self stringValueForStatus:[representedObjectValue objectForKey:"status"]]];
+        [statusIcon setImage:[self imageValueForStatus:[representedObjectValue objectForKey:"status"]]];
 
 
         [self addSubview:avatar];

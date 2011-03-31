@@ -17,14 +17,10 @@ var botReplies = ["Hello", "How are you?", "I think Cappuccino is awesome.", "CP
     CPDictionary theUser;
 }
 
-- (id)initWithNewChatWindow
+- (void)loadWindow
 {
-    self = [super init];
-
-    if (self)
-    {
-        var chatWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(100,100,320,350) styleMask:CPClosableWindowMask|CPResizableWindowMask],
-            contentView = [chatWindow contentView];
+    var chatWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(100,100,320,350) styleMask:CPClosableWindowMask|CPResizableWindowMask],
+        contentView = [chatWindow contentView];
 
         [chatWindow setMinSize:CGSizeMake(310, 150)];
         [chatWindow setDelegate:self];
@@ -73,9 +69,6 @@ var botReplies = ["Hello", "How are you?", "I think Cappuccino is awesome.", "CP
         [chatWindow makeFirstResponder:chatTextField];
 
         messageAlertSound = [[CPSound alloc] initWithContentsOfFile:[[CPBundle mainBundle] pathForResource:"whoop.mp3"] byReference:nil];
-    }
-
-    return self;
 }
 
 - (void)windowDidMove:(CPNotification)aNote

@@ -31,7 +31,7 @@ buddies2 =
     [CPDictionary dictionaryWithJSObject:{"type":"user", "chat":nil, "name":"Scott", "avatar":resourceImage("guest-avatar.png", CGSizeMake(30, 30)), "status":ChatStatusAway}]
 ]
 
-@implementation BuddyListController : CPObject
+@implementation BuddyListController : CPWindowController
 {
     CPOutlineView buddyList;
     CPScrollView  buddyListScrollView;
@@ -39,47 +39,44 @@ buddies2 =
     CPArray       buddyGroups;
 }
 
-- (id)initWithNewBuddyListForWinodw:(CPWindow)aWindow
+- (void)loadWindow
 {
-    self = [super init];
+    var aWindow = [[CPWindow alloc] initWithContentRect:CGRectMake(50,50,320,550) styleMask:CPClosableWindowMask|CPResizableWindowMask],
+        contentView = [aWindow contentView];
 
-    if (self)
-    {
-        [aWindow setMinSize:CGSizeMake(310, 150)];
-        var contentView = [aWindow contentView];
+    [self setWindow:aWindow];
 
-        buddyListScrollView = [[CPScrollView alloc] initWithFrame:[contentView bounds]];
-        [buddyListScrollView setAutoresizingMask:CPViewWidthSizable|CPViewHeightSizable];
-        buddyList = [[CPOutlineView alloc] initWithFrame:CGRectMakeZero()];
-        [buddyList setSelectionHighlightStyle:CPTableViewSelectionHighlightStyleRegular];
-        [buddyList setUsesAlternatingRowBackgroundColors:YES];
+    [aWindow setMinSize:CGSizeMake(310, 150)];
 
-        var buddiesColumn = [[CPTableColumn alloc] initWithIdentifier:"buddieslist"];
-        [buddiesColumn setDataView:[[BuddyListDataView alloc] init]];
-        [buddyList addTableColumn:buddiesColumn];
+    buddyListScrollView = [[CPScrollView alloc] initWithFrame:[contentView bounds]];
+    [buddyListScrollView setAutoresizingMask:CPViewWidthSizable|CPViewHeightSizable];
+    buddyList = [[CPOutlineView alloc] initWithFrame:CGRectMakeZero()];
+    [buddyList setSelectionHighlightStyle:CPTableViewSelectionHighlightStyleRegular];
+    [buddyList setUsesAlternatingRowBackgroundColors:YES];
 
-        [buddyListScrollView setDocumentView:buddyList];
-        [contentView addSubview:buddyListScrollView];
+    var buddiesColumn = [[CPTableColumn alloc] initWithIdentifier:"buddieslist"];
+    [buddiesColumn setDataView:[[BuddyListDataView alloc] init]];
+    [buddyList addTableColumn:buddiesColumn];
 
-        var group1 = [CPDictionary dictionaryWithObjects:["Buddies", buddies2, "group"] forKeys:["value", "buddies", "type"]];
-        var group2 = [CPDictionary dictionaryWithObjects:["Co-Workers", buddies1, "group"] forKeys:["value", "buddies", "type"]];
+    [buddyListScrollView setDocumentView:buddyList];
+    [contentView addSubview:buddyListScrollView];
 
-        buddyGroups = [group1, group2];
+    var group1 = [CPDictionary dictionaryWithObjects:["Buddies", buddies2, "group"] forKeys:["value", "buddies", "type"]];
+    var group2 = [CPDictionary dictionaryWithObjects:["Co-Workers", buddies1, "group"] forKeys:["value", "buddies", "type"]];
 
-        [buddyList setDelegate:self];
-        [buddyList setDataSource:self];
+    buddyGroups = [group1, group2];
 
-        [buddyList sizeLastColumnToFit];
-        [buddyList setHeaderView:nil];
-        [buddyList setCornerView:nil];
-        [buddyList setTarget:self];
-        [buddyList setDoubleAction:@selector(openChat:)];
-        [buddyList setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
+    [buddyList setDelegate:self];
+    [buddyList setDataSource:self];
 
-        [buddyList expandItem:nil expandChildren:YES];
-    }
+    [buddyList sizeLastColumnToFit];
+    [buddyList setHeaderView:nil];
+    [buddyList setCornerView:nil];
+    [buddyList setTarget:self];
+    [buddyList setDoubleAction:@selector(openChat:)];
+    [buddyList setColumnAutoresizingStyle:CPTableViewLastColumnOnlyAutoresizingStyle];
 
-    return self;
+    [buddyList expandItem:nil expandChildren:YES];
 }
 
 - (void)openChat:(id)sender
@@ -100,7 +97,7 @@ buddies2 =
         return;
     }
 
-    var controller = [[ChatWindowController alloc] initWithNewChatWindow];
+    var controller = [[ChatWindowController alloc] init];
     [controller showWindow:self];
     [controller setChatPerson:item];
 }

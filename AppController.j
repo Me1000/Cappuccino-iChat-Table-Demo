@@ -15,7 +15,7 @@
 - (void)applicationDidFinishLaunching:(CPNotification)aNotification
 {
     var controller = [[BuddyListController alloc] init];
-    [controller showWindow:self];
+    [controller showWindow:nil];
 }
 
 @end
